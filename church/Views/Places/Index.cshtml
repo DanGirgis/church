@@ -1,0 +1,89 @@
+﻿@model IEnumerable<church.Places>
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["Email"] == null)
+    {
+        Response.Redirect("~/Users/Login", false);
+    }
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<h2>List Places</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <h3>Are you sure you wont to Delete this Place?</h3>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btndelete" class="btn btn-primary">Delete</a>
+                    <a href="#" id="btncancel" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Place)
+        </th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Place)
+            </td>
+            <td>
+                @*@Html.ActionLink("Edit", "Edit", new {  id=item.ID_Place }, new {@class="btn btn-primary"} ) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.ID_Place })*@
+                <a href="#" class="btn btn-danger" onclick="confirm(@item.ID_Place)">Delete</a>
+            </td>
+        </tr>
+    }
+
+</table>
+<input type="hidden" id="placeID" />
+<script>
+    var confirm = function (id) {
+        $("#placeID").val(id);
+        $("#DeleteModal").modal('show');
+    }
+    $("#btndelete").click(function () {
+        var _id = $("#placeID").val();
+        $.ajax({
+            type: "post",
+            url: "/Places/Delete",
+            data: { id: _id },
+            success: function (result) {
+                if (result) {
+                    $("#DeleteModal").modal("hide");
+                    $("#placeID").val(null);
+                    window.location.href = "/Places/Index";
+                } else {
+                    alert("something went wrong while processing your requset ");
+                }
+            }
+        });
+    })
+
+    $("#btncancel").click(function () {
+        window.location.href = "/Places/Index";
+    })
+
+
+</script>

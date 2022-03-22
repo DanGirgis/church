@@ -1,0 +1,85 @@
+﻿@model IEnumerable<church.PDependedon>
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["Email"] == null)
+    {
+        Response.Redirect("~/Users/Login", false);
+    }
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<h2>List Actions</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <h3>Are you sure you wont to Delete this Action?</h3>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btndelete" class="btn btn-primary">Delete</a>
+                    <a href="#" id="btncancelcomfirm" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover table-bordered">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PDName)
+        </th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PDName)
+            </td>
+            <td>
+                @*@Html.ActionLink("Edit", "Edit", new { id=item.PDID }) |*@
+                @*@Html.ActionLink("Details", "Details", new { id=item.PDID }) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.PDID })*@
+                <a href="#" id="showModal" class="btn btn-danger" onclick="confirm(@item.PDID)">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+<input type="hidden" id="ActionID" />
+<script>
+    var confirm = function (id) {
+        $("#ActionID").val(id);
+        $("#deleteModal").modal('show');
+    }
+    $("#btndelete").click(function () {
+        var _id = $("#ActionID").val();
+        $.ajax({
+            type: "post",
+            url: "/PDependedon/Delete",
+            data: { id: _id },
+            success: function (reuslt) {
+                if (reuslt) {
+                    $("#deleteModal").modal("hide");
+                    $("#ActionID").val(null);
+                    window.location.href = "/PDependedon/Index";
+
+                } else {
+                    alert("something went wrong while processing your requset ");
+                }
+            }
+        });
+    })
+    $("#btncancelcomfirm").click(function () {
+        window.location.href = "/PDependedon/Index";
+    })
+</script>

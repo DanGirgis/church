@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="churchModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Lessons">
+          <Key>
+            <PropertyRef Name="ID_Lesson" />
+          </Key>
+          <Property Name="ID_Lesson" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Teacher" Type="int" />
+          <Property Name="Name_Lesson" Type="nvarchar" MaxLength="40" />
+          <Property Name="Date_of_Lesson" Type="date" />
+        </EntityType>
+        <EntityType Name="PDependedon">
+          <Key>
+            <PropertyRef Name="PDID" />
+          </Key>
+          <Property Name="PDID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PDName" Type="nvarchar" MaxLength="150" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Places">
+          <Key>
+            <PropertyRef Name="ID_Place" />
+          </Key>
+          <Property Name="ID_Place" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Place" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Point">
+          <Key>
+            <PropertyRef Name="PID" />
+          </Key>
+          <Property Name="PID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PDID" Type="int" />
+          <Property Name="IDStudent" Type="int" />
+          <Property Name="Pdate" Type="datetime" />
+          <Property Name="Score" Type="int" />
+        </EntityType>
+        <EntityType Name="Students">
+          <Key>
+            <PropertyRef Name="ID_student" />
+          </Key>
+          <Property Name="ID_student" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_student" Type="nvarchar" MaxLength="50" />
+          <Property Name="TELL_Student" Type="char" MaxLength="11" />
+          <Property Name="Addr_student" Type="nvarchar" MaxLength="75" />
+          <Property Name="Date_of_birth" Type="date" />
+          <Property Name="ID_Place" Type="int" />
+          <Property Name="img" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Teachers">
+          <Key>
+            <PropertyRef Name="ID_teacher" />
+          </Key>
+          <Property Name="ID_teacher" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_teacher" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tel_teacher" Type="char" MaxLength="11" />
+          <Property Name="Date_Of_berith" Type="date" />
+          <Property Name="ID_place" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Point__PDID__35BCFE0A">
+          <End Role="PDependedon" Type="Self.PDependedon" Multiplicity="0..1" />
+          <End Role="Point" Type="Self.Point" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PDependedon">
+              <PropertyRef Name="PDID" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="PDID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lessons_Teachers">
+          <End Role="Teachers" Type="Self.Teachers" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lessons" Type="Self.Lessons" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teachers">
+              <PropertyRef Name="ID_teacher" />
+            </Principal>
+            <Dependent Role="Lessons">
+              <PropertyRef Name="ID_Teacher" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Point_Students">
+          <End Role="Students" Type="Self.Students" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Point" Type="Self.Point" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Students">
+              <PropertyRef Name="ID_student" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="IDStudent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Students_Places">
+          <End Role="Places" Type="Self.Places" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Students" Type="Self.Students" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Places">
+              <PropertyRef Name="ID_Place" />
+            </Principal>
+            <Dependent Role="Students">
+              <PropertyRef Name="ID_Place" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Teachers_Places1">
+          <End Role="Places" Type="Self.Places" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Teachers" Type="Self.Teachers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Places">
+              <PropertyRef Name="ID_Place" />
+            </Principal>
+            <Dependent Role="Teachers">
+              <PropertyRef Name="ID_place" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="churchModelStoreContainer">
+          <EntitySet Name="Lessons" EntityType="Self.Lessons" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PDependedon" EntityType="Self.PDependedon" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Point" EntityType="Self.Point" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Students" EntityType="Self.Students" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Teachers" EntityType="Self.Teachers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Point__PDID__35BCFE0A" Association="Self.FK__Point__PDID__35BCFE0A">
+            <End Role="PDependedon" EntitySet="PDependedon" />
+            <End Role="Point" EntitySet="Point" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lessons_Teachers" Association="Self.FK_Lessons_Teachers">
+            <End Role="Teachers" EntitySet="Teachers" />
+            <End Role="Lessons" EntitySet="Lessons" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Point_Students" Association="Self.FK_Point_Students">
+            <End Role="Students" EntitySet="Students" />
+            <End Role="Point" EntitySet="Point" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Students_Places" Association="Self.FK_Students_Places">
+            <End Role="Places" EntitySet="Places" />
+            <End Role="Students" EntitySet="Students" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Teachers_Places1" Association="Self.FK_Teachers_Places1">
+            <End Role="Places" EntitySet="Places" />
+            <End Role="Teachers" EntitySet="Teachers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="churchModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Lessons">
+          <Key>
+            <PropertyRef Name="ID_Lesson" />
+          </Key>
+          <Property Name="ID_Lesson" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Teacher" Type="Int32" />
+          <Property Name="Name_Lesson" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Date_of_Lesson" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK_Lessons_Teachers" FromRole="Lessons" ToRole="Teachers" />
+        </EntityType>
+        <EntityType Name="PDependedon">
+          <Key>
+            <PropertyRef Name="PDID" />
+          </Key>
+          <Property Name="PDID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PDName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Points" Relationship="Self.FK__Point__PDID__35BCFE0A" FromRole="PDependedon" ToRole="Point" />
+        </EntityType>
+        <EntityType Name="Places">
+          <Key>
+            <PropertyRef Name="ID_Place" />
+          </Key>
+          <Property Name="ID_Place" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Place" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Students" Relationship="Self.FK_Students_Places" FromRole="Places" ToRole="Students" />
+          <NavigationProperty Name="Teachers" Relationship="Self.FK_Teachers_Places1" FromRole="Places" ToRole="Teachers" />
+        </EntityType>
+        <EntityType Name="Points">
+          <Key>
+            <PropertyRef Name="PID" />
+          </Key>
+          <Property Name="PID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PDID" Type="Int32" />
+          <Property Name="IDStudent" Type="Int32" />
+          <Property Name="Pdate" Type="DateTime" Precision="3" />
+          <Property Name="Score" Type="Int32" />
+          <NavigationProperty Name="PDependedon" Relationship="Self.FK__Point__PDID__35BCFE0A" FromRole="Point" ToRole="PDependedon" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Point_Students" FromRole="Point" ToRole="Students" />
+        </EntityType>
+        <EntityType Name="Students">
+          <Key>
+            <PropertyRef Name="ID_student" />
+          </Key>
+          <Property Name="ID_student" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_student" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TELL_Student" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="Addr_student" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="Date_of_birth" Type="DateTime" Precision="0" />
+          <Property Name="ID_Place" Type="Int32" />
+          <Property Name="img" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Place" Relationship="Self.FK_Students_Places" FromRole="Students" ToRole="Places" />
+          <NavigationProperty Name="Points" Relationship="Self.FK_Point_Students" FromRole="Students" ToRole="Point" />
+        </EntityType>
+        <EntityType Name="Teachers">
+          <Key>
+            <PropertyRef Name="ID_teacher" />
+          </Key>
+          <Property Name="ID_teacher" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_teacher" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tel_teacher" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="Date_Of_berith" Type="DateTime" Precision="0" />
+          <Property Name="ID_place" Type="Int32" />
+          <NavigationProperty Name="Lessons" Relationship="Self.FK_Lessons_Teachers" FromRole="Teachers" ToRole="Lessons" />
+          <NavigationProperty Name="Place" Relationship="Self.FK_Teachers_Places1" FromRole="Teachers" ToRole="Places" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Lessons_Teachers">
+          <End Role="Teachers" Type="churchModel.Teachers" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lessons" Type="churchModel.Lessons" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teachers">
+              <PropertyRef Name="ID_teacher" />
+            </Principal>
+            <Dependent Role="Lessons">
+              <PropertyRef Name="ID_Teacher" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Point__PDID__35BCFE0A">
+          <End Role="PDependedon" Type="Self.PDependedon" Multiplicity="0..1" />
+          <End Role="Point" Type="churchModel.Points" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PDependedon">
+              <PropertyRef Name="PDID" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="PDID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Students_Places">
+          <End Role="Places" Type="churchModel.Places" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Students" Type="churchModel.Students" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Places">
+              <PropertyRef Name="ID_Place" />
+            </Principal>
+            <Dependent Role="Students">
+              <PropertyRef Name="ID_Place" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Teachers_Places1">
+          <End Role="Places" Type="churchModel.Places" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Teachers" Type="churchModel.Teachers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Places">
+              <PropertyRef Name="ID_Place" />
+            </Principal>
+            <Dependent Role="Teachers">
+              <PropertyRef Name="ID_place" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Point_Students">
+          <End Role="Students" Type="churchModel.Students" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Point" Type="churchModel.Points" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Students">
+              <PropertyRef Name="ID_student" />
+            </Principal>
+            <Dependent Role="Point">
+              <PropertyRef Name="IDStudent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="churchEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Lessons" EntityType="churchModel.Lessons" />
+          <EntitySet Name="PDependedons" EntityType="Self.PDependedon" />
+          <EntitySet Name="Places" EntityType="churchModel.Places" />
+          <EntitySet Name="Points" EntityType="churchModel.Points" />
+          <EntitySet Name="Students" EntityType="churchModel.Students" />
+          <EntitySet Name="Teachers" EntityType="churchModel.Teachers" />
+          <EntitySet Name="Users" EntityType="churchModel.Users" />
+          <AssociationSet Name="FK_Lessons_Teachers" Association="Self.FK_Lessons_Teachers">
+            <End Role="Teachers" EntitySet="Teachers" />
+            <End Role="Lessons" EntitySet="Lessons" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Point__PDID__35BCFE0A" Association="Self.FK__Point__PDID__35BCFE0A">
+            <End Role="PDependedon" EntitySet="PDependedons" />
+            <End Role="Point" EntitySet="Points" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Students_Places" Association="Self.FK_Students_Places">
+            <End Role="Places" EntitySet="Places" />
+            <End Role="Students" EntitySet="Students" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Teachers_Places" Association="Self.FK_Teachers_Places1">
+            <End Role="Places" EntitySet="Places" />
+            <End Role="Teachers" EntitySet="Teachers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Point_Students" Association="Self.FK_Point_Students">
+            <End Role="Students" EntitySet="Students" />
+            <End Role="Point" EntitySet="Points" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="churchModelStoreContainer" CdmEntityContainer="churchEntities">
+          <EntitySetMapping Name="Lessons">
+            <EntityTypeMapping TypeName="churchModel.Lessons">
+              <MappingFragment StoreEntitySet="Lessons">
+                <ScalarProperty Name="ID_Lesson" ColumnName="ID_Lesson" />
+                <ScalarProperty Name="ID_Teacher" ColumnName="ID_Teacher" />
+                <ScalarProperty Name="Name_Lesson" ColumnName="Name_Lesson" />
+                <ScalarProperty Name="Date_of_Lesson" ColumnName="Date_of_Lesson" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PDependedons">
+            <EntityTypeMapping TypeName="churchModel.PDependedon">
+              <MappingFragment StoreEntitySet="PDependedon">
+                <ScalarProperty Name="PDID" ColumnName="PDID" />
+                <ScalarProperty Name="PDName" ColumnName="PDName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Places">
+            <EntityTypeMapping TypeName="churchModel.Places">
+              <MappingFragment StoreEntitySet="Places">
+                <ScalarProperty Name="ID_Place" ColumnName="ID_Place" />
+                <ScalarProperty Name="Place" ColumnName="Place" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Points">
+            <EntityTypeMapping TypeName="churchModel.Points">
+              <MappingFragment StoreEntitySet="Point">
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="PDID" ColumnName="PDID" />
+                <ScalarProperty Name="IDStudent" ColumnName="IDStudent" />
+                <ScalarProperty Name="Pdate" ColumnName="Pdate" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="churchModel.Students">
+              <MappingFragment StoreEntitySet="Students">
+                <ScalarProperty Name="ID_student" ColumnName="ID_student" />
+                <ScalarProperty Name="Name_student" ColumnName="Name_student" />
+                <ScalarProperty Name="TELL_Student" ColumnName="TELL_Student" />
+                <ScalarProperty Name="Addr_student" ColumnName="Addr_student" />
+                <ScalarProperty Name="Date_of_birth" ColumnName="Date_of_birth" />
+                <ScalarProperty Name="ID_Place" ColumnName="ID_Place" />
+                <ScalarProperty Name="img" ColumnName="img" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teachers">
+            <EntityTypeMapping TypeName="churchModel.Teachers">
+              <MappingFragment StoreEntitySet="Teachers">
+                <ScalarProperty Name="ID_teacher" ColumnName="ID_teacher" />
+                <ScalarProperty Name="Name_teacher" ColumnName="Name_teacher" />
+                <ScalarProperty Name="Tel_teacher" ColumnName="Tel_teacher" />
+                <ScalarProperty Name="Date_Of_berith" ColumnName="Date_Of_berith" />
+                <ScalarProperty Name="ID_place" ColumnName="ID_place" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="churchModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

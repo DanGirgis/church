@@ -1,0 +1,111 @@
+﻿@model IEnumerable<church.Lessons>
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["Email"] == null)
+    {
+        Response.Redirect("~/Users/Login", false);
+    }
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<h2>Lies Lessons</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    @using (Html.BeginForm("Search", "Teachers"))
+                    {
+                        <label>Search: </label>
+                        <input type="text" id="Search" name="Search" class="form-control" />
+                        <input type="submit" class="btn btn-info" />
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <h3  class="bg-danger">Are you sure you wont to Delete this Teacher?</h3>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnDelete" class="btn btn-primary" >Delete</a>
+                    <a href="#" id="btncancelconfirm" class="btn btn-danger" >Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Teacher.Name_teacher)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name_Lesson)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date_of_Lesson)
+        </th>
+        <th>Actions</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Teacher.Name_teacher)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name_Lesson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date_of_Lesson)
+        </td>
+        <td>
+            @Html.ActionLink("Edit","Edit",new {id= item.ID_Lesson }, new {@class="btn btn-primary" }) |
+            <a href="#" id="ShowModal"onclick="confirm(@item.ID_Lesson)"class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+}
+</table>
+<input type="hidden" id="LessonsID" />
+<script>
+    var confirm = function (id) {
+        $("#LessonsID").val(id);
+        $("#DeleteModal").modal('show');
+    }
+    $("#btnDelete").click(function () {
+        var _id = $("#LessonsID").val();
+        $.ajax({
+            type: "post",
+            url: "/Lessons/Delete",
+            data: { id: _id },
+            success: function (result) {
+                if (result) {
+                    $("#DeleteModal").modal("hide");
+                    $("#LessonsID").val(null);
+                    window.location.href = "/Lessons/Index";
+                } else {
+                    alert("something went wrong while processing your requset ");
+                }
+            }
+        });
+    })
+    $("#btncancelconfirm").click(function () {
+        window.location.href = "/Lessons/Index";
+    })
+
+
+</script>

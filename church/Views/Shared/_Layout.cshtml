@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                </button>
+                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                @if (Session["Email"] != null)
+                {
+                    @Html.ActionLink("Students", "Index", "Students", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Teachers", "Index", "Teachers", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Places", "Index", "Places", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Actions", "Index", "PDependedon", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("List Score", "Index", "Point", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("List Lessons", "Index", "Lessons", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("Logout", "Logout", "Users", new { area = "" }, new { @class = "navbar-brand" })
+                }
+                @if (Session["Email"] == null)
+                {
+                   
+                        @Html.ActionLink("Register", "Create", "Users", new { area = "" }, new { @class = "navbar-brand" })
+                        @Html.ActionLink("Login", "Login", "Users", new { area = "" }, new { @class = "navbar-brand " })
+                                   
+                }
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+       
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Date - My ASP.NET Application</p>
+            @*<audio controls autoplay >
+                <source  src="~/audio/ترنيمةانتالربالراعىاداءابونايواقيمناجى.mp3"type="audio/mpeg">
+            </audio>*@
+        </footer>
+    </div>
+   
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+  
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css" />
+     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>*@
+</body>
+</html>

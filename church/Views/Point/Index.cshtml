@@ -1,0 +1,179 @@
+﻿@model IEnumerable<church.Points>
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["Email"] == null)
+    {
+        Response.Redirect("~/Users/Login", false);
+    }
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<script src="~/Scripts/bootstrap.min.js"></script>
+@*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>*@
+<link href="~/Content/datatables.min.css" rel="stylesheet" />
+<script src="~/scripts/dataTables.jqueryui.min.js"></script>
+<h2>List Score</h2>
+<p>
+    @Html.ActionLink("Create New", "Create", FormMethod.Get)
+</p>
+<div class="modal fade" id="PointModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Score Information</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ScoreForm">
+                    <h1 id="stName"></h1>
+                    <hr />
+                    <h3>
+                        <span> Score = </span> <span style="color:green;" id="totalScoreSpan"></span>
+                    </h3>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    @using (Html.BeginForm("Search", "Point"))
+                    {
+                        <label>Search:</label>
+                        <input type="text" class="form-control" id="Search" name="Search" />
+                        <input type="submit" class="btn btn-info" value="Search" />
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <div class="modal-body">
+                <h3>Are you sure you wont to Delete this Score?</h3>
+            </div>
+            <div class="modal-footer">
+                <div class="btn btn-group">
+                    <a href="#" id="btndelete" class="btn btn-primary">Delete</a>
+                    <a href="#" id="btncancelconfirm" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="myTable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PDependedon.PDName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Student.Name_student)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pdate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>SUM</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PDependedon.PDName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.Name_student)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                <td>
+                    <p>
+                        <a href="#" class="btn btn-primary" id="btnSum" data-toggle="modal" onclick="GetStudentPointsSum(@item.IDStudent)" data-target="#PointModal">Score</a>
+                    </p>
+                    @*@Html.ActionLink("SUM", "SUM", new {id=item.Score })*@
+                    @*<input type="submit" name="SUM" class="btn btn-info" id="SUM" value="SUM"
+                        @Html.DisplayFor(model =>item.Score) />*@
+                    @*<button onclick="Point.SumScore(Html.DisplayFor(modelItem => item.IDStudent))">Click Here</button>
+                        @if(ViewData["PointsOfStudent"] != null)
+                        {
+                            <h2>Student Score = @ViewData["PointsOfStudent"]</h2>
+                        }
+                        else
+                        {
+                            <h2>There is no data to show</h2>
+                        }*@
+                </td>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { id=item.PID })*@
+                    @*@Html.ActionLink("Details", "Details", new { id=item.PID }) |*@
+                    @*@Html.ActionLink("Delete", "Delete", new { id = item.PID })*@
+                    <a href="#" id="showmodal" class="btn btn-danger" onclick="confirm(@item.PID)">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="hidden" id="pointID" />
+<script>
+    var confirm = function (id) {
+        $("#pointID").val(id);
+        $("#deleteModal").modal('show');
+    }
+    function GetStudentPointsSum(stId)
+    {
+        $.ajax({
+            url: '@Url.Action("GetStudnetPointsSum","Point")?id=' + stId,
+            type: 'GET',
+            success: function (res) {
+                console.log(res);
+                $('#stName').html(res.name);
+                $('#totalScoreSpan').html(res.score);
+            },
+            error: function (err) {
+                $('#totalScoreSpan').html(err);
+            }
+        });
+    }
+   
+
+    $("#btndelete").click(function () {
+        var _id = $("#pointID").val();
+        $.ajax({
+            type: "post",
+            url: "/Point/Delete",
+            data: { id: _id },
+            success: function (result) {
+                if (result) {
+                    $("#deleteModal").modal("hide");
+                    $("#pointID").val(null);
+                    window.location.href = "/Point/Index";
+                } else {
+                    alert("something went wrong while processing your requset ");
+                }
+            }
+        });
+    })
+    $("#btncancelconfirm").click(function () {
+        window.location.href = "/Point/Index";
+    })
+    $('#myTable').DataTable();
+</script>

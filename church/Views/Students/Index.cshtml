@@ -1,0 +1,140 @@
+﻿@model IEnumerable<church.Students>
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["Email"] == null)
+    {
+        Response.Redirect("~/Users/Login", false);
+    }
+}
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<h2>List Students</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    @using (Html.BeginForm("Search", "Students"))
+                    {
+                        <label>Search:</label>
+                        <input type="text" class="form-control" id="Search" name="Search" />
+                        <input type="submit" class="btn btn-info" />
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"id="DeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm</h2>
+            </div>
+            <div class="modal-body">
+                <h3> Are you sure you want to delete this Student ?</h3>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnDelete" class="btn btn-primary">Delete</a>
+                    <a href="#" id="btncancelConfirm" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Name_student)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TELL_Student)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Addr_student)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date_of_birth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Place.Place)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.img)
+        </th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Name_student)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TELL_Student)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Addr_student)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date_of_birth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Place.Place)
+            </td>
+            <td>
+                <img src="~/Uploades/@Html.DisplayFor(model=>item.img)"
+                     class="thumbnail" style="width:60px; height:60px;" />
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID_student, img = item.img } , new {@class="btn btn-primary" }) |
+                @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.ID_student })*@
+                <a href="#"id="showModal"class="btn btn-danger"onclick="Confirm(@item.ID_student)">Delete</a>
+            </td>
+        </tr>
+    }
+
+</table>
+<input type="hidden"id="studentId" />
+<script>
+    var Confirm = function (id) {
+        $("#studentId").val(id);
+        $("#DeleteModal").modal('show');
+    }
+    $("#btnDelete").click(function () {
+        var _id = $("#studentId").val();
+        $.ajax({
+            type: "post",
+            url: "/Students/Delete",
+            data: { id: _id },
+            success: function (result) {
+                if (result) {
+                    $("#DeleteModal").modal("hide");
+                    $("#studentId").val(null);
+                    window.location.href = "/Students/Index";
+                } else {
+                    alert("something went wrong while processing your requset ");
+                }
+            }
+        });
+    })
+    $("#btncancelConfirm").click(function () {
+        window.location.href = "/Students/Index";
+    })
+   
+</script>
